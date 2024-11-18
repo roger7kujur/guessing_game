@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Animal Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #49a4ff, #82cfff);
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .game-container {
+            background: #3a3577;
+            border-radius: 20px;
+            width: 350px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .progress-bar {
+            height: 10px;
+            background: #49a4ff;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background: #82cfff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .question-image {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .question-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .option-button {
+            background: #5b53c3;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .option-button:hover {
+            background: #6f63e0;
+        }
+        .result-message {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- Progress bar -->
+        <div class="progress-bar">
+            <span id="progress-bar"></span>
+        </div>
+
+        <!-- Question -->
+        <div class="question-title" id="question-title">Identify the animal</div>
+        <img src="cat.jpg" alt="Animal" class="question-image" id="question-image">
+
+        <!-- Options -->
+        <div class="options" id="options-container"></div>
+
+        <!-- Result Message -->
+        <div id="result-message" class="result-message"></div>
+    </div>
+
+    <script>
+        // Questions array
+        const questions = [
+            {
+                question: "Identify the animal",
+                image: "cat.jpg",
+                correctAnswer: "Cat",
+                options: ["Cat", "Dog", "Lion", "Goat"]
+            },
+            {
+                question: "Identify the wild animal",
+                image: "lion.jpg",
+                correctAnswer: "Lion",
+                options: ["Cat", "Dog", "Lion", "Goat"]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+
+        // Function to display the current question
+        function displayQuestion() {
+            const questionTitle = document.getElementById("question-title");
+            const questionImage = document.getElementById("question-image");
+            const optionsContainer = document.getElementById("options-container");
+            const progressBar = document.getElementById("progress-bar");
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            // Update question text and image
+            questionTitle.textContent = currentQuestion.question;
+            questionImage.src = currentQuestion.image;
+
+            // Update progress bar
+            progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+            // Clear previous options
+            optionsContainer.innerHTML = "";
+
+            // Create new options
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement("button");
+                button.classList.add("option-button");
+                button.textContent = option;
+                button.onclick = () => validateAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Function to validate the selected answer
+        function validateAnswer(selectedAnswer) {
+            const resultMessage = document.getElementById("result-message");
+            const currentQuestion = questions[currentQuestionIndex];
+
+            if (selectedAnswer === currentQuestion.correctAnswer) {
+                resultMessage.style.color = "lightgreen";
+                resultMessage.textContent = "Correct! Moving to the next question...";
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < questions.length) {
+                        displayQuestion();
+                        resultMessage.textContent = ""; // Clear result message
+                    } else {
+                        resultMessage.textContent = "Congratulations! You've completed the game!";
+                    }
+                }, 1000);
+            } else {
+                resultMessage.style.color = "red";
+                resultMessage.textContent = "Wrong! Try again!";
+            }
+        }
+
+        // Initialize the first question
+        displayQuestion();
+    </script>
+</body>
+</html>
